@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.StatMapper">
+
+
+    <!-- 借书学院排行 -->
+    <select id="topBorrowDept" resultType="com.example.demo.model.vo.StatTopBorrowDeptVO">
+        SELECT deptName, bookCount, studentCount
+        FROM(
+            SELECT
+                dept as deptName, COUNT(recordId) as bookCount
+            FROM
+                borrows, users
+            WHERE
+                userId = id
+            GROUP BY
+                dept
+            ORDER BY
+                bookCount DESC
+            ) t1,
+            (SELECT
+                dept, COUNT(id) as studentCount
+            FROM
+                users
+            GROUP BY
+                dept
+            ) t2
+        WHERE
+            t1.deptName = t2.dept
+
+    </select>
+
+
+    <!-- 上传用户排行 -->
+    <select id="topUploadUser" resultType="com.example.demo.model.vo.StatTopUploadUserVO">
+        SELECT
+            id as userId, name as userName, COUNT(recordId) as paperCount
+        FROM
+            uploads, users
+        WHERE
+            userId = id
+        GROUP BY
+            userId
+        ORDER BY
+            paperCount DESC
+
+    </select>
+
+
+
+    <!-- 出版社销量排行 -->
+    <select id="topBuyPublisher" resultType="com.example.demo.model.vo.StatTopBuyPublisherVO">
+        SELECT
+            publisherName, saleCount, publishCount
+        FROM
+            (SELECT
+                publisher as publisherName, COUNT(recordId) as saleCount
+            FROM
+                buys, books
+            WHERE
+                bookId = id
+            GROUP BY
+                publisher
+            ORDER BY
+                saleCount DESC
+            ) t1,
+            (SELECT
+                publisher, COUNT(id) as publishCount
+            FROM
+                books
+            GROUP BY
+                publisher
+            ) t2
+        WHERE
+        t1.publisherName = t2.publisher
+
+    </select>
+
+
+
+    <!--最高产的作者-->
+    <select id="topAuthor" resultType="com.example.demo.model.vo.StatTopAuthorVO">
+        (SELECT
+            ba as author,
+            bc as bookCount,
+            IFNULL(pc, 0) as paperCount,
+            IFNULL(bc+pc, bc) as sum
+        FROM
+            (SELECT
+                b.author as ba, COUNT(b.id) as bc
+            FROM
+                books b
+            GROUP BY
+                b.author
+            ) tb
+        LEFT OUTER JOIN
+            (SELECT
+                p.author as pa, COUNT(p.id) as pc
+            FROM
+                papers p
+            GROUP BY
+                p.author
+            ) tp
+        ON
+            tb.ba = tp.pa
+        )
+
+        UNION
+
+        (SELECT
+            pa as author,
+            IFNULL(bc, 0) as bookCount,
+            pc as paperCount,
+            IFNULL(bc+pc, pc) as sum
+        FROM
+            (SELECT
+                b.author as ba, COUNT(b.id) as bc
+            FROM
+                books b
+            GROUP BY
+                b.author
+            ) tb
+        RIGHT OUTER JOIN
+            (SELECT
+                p.author as pa, COUNT(p.id) as pc
+            FROM
+                papers p
+            GROUP BY
+                p.author
+            ) tp
+        ON
+            tb.ba = tp.pa
+        )
+
+        ORDER BY
+            sum DESC
+
+    </select>
+
+
+</mapper>

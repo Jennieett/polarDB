@@ -1,0 +1,19 @@
+server:
+  port: 8081
+spring:
+
+  #  datasource:
+  #    driver-class-name: com.mysql.cj.jdbc.Driver
+  #    url: "jdbc:mysql://localhost:3306/madata?useUnicode=true&characterEncoding=utf-8&useSSL=true"
+  #    username: root
+  #    password: 123456
+  #    url: "jdbc:mysql://database-test1123.rwlb.rds.aliyuncs.com:3306/libsystem?useSSL=false&useUnicode=true&characterEncoding=utf-8"
+  #    username: "madata"
+  #    password: "123456cyx!"
+
+  datasource:
+    url: jdbc:mysql://database-test1123.rwlb.rds.aliyuncs.com:3306/libsystem?useUnicode=true&characterEncoding=utf-8&SSL=true #&serverTimezone=Asia/Hangzhou
+    username: madata
+    password: 123456cyx!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+

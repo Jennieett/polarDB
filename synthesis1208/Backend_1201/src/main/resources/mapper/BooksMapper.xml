@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.BooksMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, year, type, author, publisher
+    </sql>
+
+    <!-- 查询全部 -->
+    <select id="getAll" resultType="com.example.demo.model.entity.Books">
+        SELECT
+            id, name, year, type, author, publisher
+        FROM
+            books
+    </select>
+
+    <!-- 按一个值查询 -->
+    <select id="getBySingleFilter" resultType="com.example.demo.model.entity.Books">
+        SELECT
+            id, name, year, type, author, publisher
+        FROM
+            books
+        WHERE
+            ${key} LIKE '%${value}%'
+    </select>
+
+    <!-- 按一个值查询+借阅状态 -->
+    <select id="getBySingleFilter1" resultType="com.example.demo.model.vo.borrowbookVO">
+        SELECT
+            b1.id, b1.name, b1.year, b1.type, b1.author, b1.publisher, b2.returned as recordId
+        FROM
+            books b1, borrows b2
+        WHERE
+            ${key} LIKE '%${value}%' AND b2.bookId=b1.id AND b1.id  >1000000
+        UNION
+        SELECT
+            b1.id, b1.name, b1.year, b1.type, b1.author, b1.publisher, 1 as recordId
+        FROM
+            books b1
+        WHERE
+            ${key} LIKE '%${value}%' AND b1.id  >1000000 AND NOT EXISTS (
+                SELECT recordId
+                FROM borrows b2
+                WHERE b2.bookId=b1.id
+            )
+    </select>
+
+    <!-- 按两个值查询 -->
+    <select id="getByDoubleFilters" resultType="com.example.demo.model.entity.Books">
+        SELECT
+            id, name, year, type, author, publisher
+        FROM
+            books
+        WHERE
+            ${key1} LIKE '${value1}' AND ${key2} LIKE '${value2}'
+    </select>
+
+
+    <!-- 增删改 -->
+    <insert id="newTuple">
+        INSERT INTO books(id, name, year, type, author, publisher) values(#{id}, #{name}, #{year}, #{type}, #{author}, #{publisher});
+    </insert>
+
+    <update id="updateTuple">
+        UPDATE
+            books
+        SET
+            id = #{id}, name = #{name}, year = #{year}, type = #{type}, author = #{author}, publisher = #{publisher}
+        WHERE
+            id = #{oldId}
+    </update>
+
+    <delete id="deleteTuple">
+        DELETE FROM books WHERE id = #{id}
+    </delete>
+
+</mapper>

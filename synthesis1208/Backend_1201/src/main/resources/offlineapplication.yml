@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://localhost:3306/madata?useUnicode=true&characterEncoding=utf-8&useSSL=true
+    username: root
+    password: 1126
+
+
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.BorrowsMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        recordId, bookId, userId, dateTime, returned
+    </sql>
+
+    <!-- 查询全部 -->
+    <select id="getAll" resultType="com.example.demo.model.entity.Borrows">
+        SELECT
+            recordId, bookId, userId, dateTime, returned
+        FROM
+            borrows
+    </select>
+
+    <!-- 查询全部+bookname -->
+    <select id="getAll1" resultType="com.example.demo.model.vo.allborrowVO">
+        SELECT
+            recordId, bookId, userId, dateTime, returned,books.name AS bookname
+        FROM
+            borrows,books
+        WHERE
+            books.id=borrows.bookId
+    </select>
+
+    <!-- 按一个值查询 -->
+    <select id="getBySingleFilter" resultType="com.example.demo.model.entity.Borrows">
+        SELECT
+            recordId, bookId, userId, dateTime, returned
+        FROM
+            borrows
+        WHERE
+            ${key} LIKE '${value}'
+    </select>
+
+    <!-- 按一个值查询+bookname -->
+    <select id="getBySingleFilter1" resultType="com.example.demo.model.vo.allborrowVO">
+        SELECT
+            recordId, bookId, userId, dateTime, returned,books.name AS bookname
+        FROM
+            borrows,books
+        WHERE
+            ${key} LIKE '${value}' AND books.id=borrows.bookId
+    </select>
+
+
+    <!-- 按两个值查询 -->
+    <select id="getByDoubleFilters" resultType="com.example.demo.model.entity.Borrows">
+        SELECT
+            recordId, bookId, userId, dateTime, returned
+        FROM
+            borrows
+        WHERE
+            ${key1} LIKE '${value1}' AND ${key2} LIKE '${value2}'
+    </select>
+
+    <select id="maxTuple" resultType="Integer">
+        SELECT
+            b1.recordId
+        FROM
+            borrows b1
+        WHERE
+            b1.recordId>=ALL(SELECT recordId FROM borrows)
+    </select>
+
+    <!-- 增删改 -->
+    <insert id="newTuple">
+        INSERT INTO borrows(recordId, bookId, userId, dateTime, returned) values(#{recordId}, #{bookId}, #{userId}, #{dateTime}, #{returned});
+    </insert>
+
+    <update id="updateTuple">
+        UPDATE
+            borrows
+        SET
+            recordId = #{recordId}, bookId = #{bookId}, userId = #{userId}, dateTime = #{dateTime}, returned = #{returned}
+        WHERE
+            recordId = #{oldRecordId}
+    </update>
+
+    <delete id="deleteTuple">
+        DELETE FROM borrows WHERE recordId = #{recordId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.UploadsMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        recordId, paperId, userId, dateTime
+    </sql>
+
+    <!-- 查询全部 -->
+    <select id="getAll" resultType="com.example.demo.model.entity.Uploads">
+        SELECT
+            recordId, paperId, userId, dateTime
+        FROM
+            uploads
+    </select>
+
+    <!-- 按一个值查询 -->
+    <select id="getBySingleFilter" resultType="com.example.demo.model.entity.Uploads">
+        SELECT
+            recordId, paperId, userId, dateTime
+        FROM
+            uploads
+        WHERE
+            ${key} LIKE '%${value}%'
+    </select>
+
+    <!-- 按两个值查询 -->
+    <select id="getByDoubleFilters" resultType="com.example.demo.model.entity.Uploads">
+        SELECT
+            recordId, paperId, userId, dateTime
+        FROM
+            uploads
+        WHERE
+            ${key1} LIKE '%${value1}%' AND ${key2} LIKE '%${value2}%'
+    </select>
+
+    <!-- 增删改 -->
+    <insert id="newTuple">
+        INSERT INTO uploads(recordId, paperId, userId, dateTime) values(#{recordId}, #{paperId}, #{userId}, #{dateTime});
+    </insert>
+
+    <update id="updateTuple">
+        UPDATE
+            uploads
+        SET
+            recordId = #{recordId}, paperId = #{paperId}, userId = #{userId}, dateTime = #{dateTime}
+        WHERE
+            recordId = #{oldRecordId}
+    </update>
+
+    <delete id="deleteTuple">
+        DELETE FROM uploads WHERE recordId = #{recordId}
+    </delete>
+
+</mapper>
